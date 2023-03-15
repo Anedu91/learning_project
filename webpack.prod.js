@@ -1,25 +1,19 @@
 const path = require("path");
 const webpack = require("webpack");
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const HtmlWebPackPlugin = require("html-webpack-plugin");
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: "./src/index.js",
+  output: {
+    filename: "bundle.[contenthash].js",
+    path: path.resolve(__dirname, "dist"),
+  },
   module: {
     rules: [
-      {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env"],
-            plugins: ["@babel/transform-runtime"],
-          },
-        },
-      },
       {
         test: /\.scss$/,
         use: [
@@ -38,12 +32,13 @@ module.exports = {
         },
       },
       {
-        test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/i,
-        loader: "file-loader",
-        options: {
-          name: "[name].[ext]",
-          publicPath: "fonts",
-          outputPath: "fonts",
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+          },
         },
       },
       {
@@ -56,23 +51,19 @@ module.exports = {
     ],
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new HtmlWebPackPlugin({
       template: "./src/index.html",
       filename: "./index.html",
     }),
     new MiniCssExtractPlugin({
-      filename: "bundle.css",
+      filename: "style.[contenthash].css",
     }),
-    new CleanWebpackPlugin({
-      dry: true,
-      verbose: true,
-      cleanStaleWebpackAssets: true,
-      protectWebpackAssets: false,
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify("production"),
     }),
   ],
-  devServer: {
-    static: path.join(__dirname, "dist"),
-    port: 9000,
-    webSocketServer: false,
+  optimization: {
+    minimizer: [new TerserPlugin(), new OptimizeCSSAssetsPlugin()],
   },
 };

@@ -5,7 +5,8 @@
   "author": "Anedu91",
   "scripts": {
     "build-dev": "webpack --config webpack.dev.js --watch",
-    "build-server": "webpack-cli serve --config webpack.dev.js"
+    "build-server": "webpack-cli serve --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
   },
   "license": "MIT",
   "dependencies": {
@@ -25,6 +26,7 @@
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.7.2",
     "node-sass": "^8.0.0",
+    "optimize-css-assets-webpack-plugin": "^6.0.1",
     "postcss": "^8.4.21",
     "postcss-loader": "^7.0.2",
     "sass-loader": "^13.2.0",
