@@ -4,9 +4,24 @@ The Teacher Evaluation Dashboard is a lightweight web application designed to as
 
 The application allows teachers to view a document preview, navigate through tasks, and filter the task list based on specific criteria. Teachers can update task scores, provide feedback, and adjust the document view according to their preferences.
 
+## How to run it
+
+There is a full demo working [here](https://anedu91.github.io/learning_project/dist/)
+
+### Production files
+
+You can find a production files into the `dist` folder
+
+### Development Enviroment
+
+You can run a dev server on `localhost:9000`
+
+- `yarn build-server`
+- `npm run build-server`
+
 ## Code Structure
 
-This code is used for rendering and handling events in a web application that allows users to evaluate tasks and provide feedback. The application consists of a `document preview`, `navigation bar`, and a list of `task cards`. Users can <b>filter</b> the task list, <b>adjust</b> the document view, and <b>update</b> task scores.
+This code is used for rendering and handling events in a web application that allows users to evaluate tasks and provide feedback. The application consists of a `document preview`, `navigation bar`, and a list of `task cards`. Users can **filter** the task list, **adjust** the document view, and **update** task scores.
 
 ### Store Object
 
