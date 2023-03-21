@@ -2,34 +2,18 @@ import { Tooltip, Collapse } from "bootstrap";
 import "./scss/main.scss";
 import "./images/sprite.svg";
 
-import { getData, postData } from "./js/fetchingData";
+import { getData } from "./js/fetchingData";
 /*UI COMPONENTS */
 import { navigationTop, rendingScore } from "./js/components/navigationTop";
 import { assignmentTask } from "./js/components/assignmentTask";
 import { documentTask, renderIframe } from "./js/components/documentTask";
-
+import { calcScore } from "./js/utils/calcScore";
+import { store } from "./js/store/store";
+import { setWidth } from "./js/utils/setWidth";
+import { selectedFilter } from "./js/utils/selectedFilter";
+import { updateTaskUi } from "./js/utils/updateTaskUi";
 //Initial State
-const store = {
-  templateSettings: {
-    view: "showAll",
-    documentWidth: 50,
-    documentPreview: "preview",
-    editUrl:
-      "https://docs.google.com/document/d/18CnEzgqapbvl22GNqfFjrllBhNNTiQCNsOvoyP21b4I/edit",
-    previewUrl:
-      "https://docs.google.com/document/d/18CnEzgqapbvl22GNqfFjrllBhNNTiQCNsOvoyP21b4I/edit",
-  },
-  scoreInfo: {
-    evaluatedScore: "",
-    gradedScore: "",
-    possibleScore: "",
-    runningScore: "",
-    averageScore: "",
-  },
-  evaluations: [],
-  evaluationsRendered: [],
-  feedback: "",
-};
+
 /*======EVENT LISTENERS======*/
 document.addEventListener("DOMContentLoaded", async () => {
   onPageLoad(1);
@@ -55,7 +39,7 @@ async function onPageLoad(url) {
           possibleScore,
           averageScore,
         };
-        calcScore();
+        store.scoreInfo.runningScore = calcScore(store);
         return data;
       })
       //Rendering the Navigation
@@ -132,10 +116,8 @@ function setupClickHandlers() {
         feedback: feedbackMessage,
         score: scoreArray,
       };
-      // postData("http://gradeflow.net/api/workitem/2", dataToPost)
-      // .then(respose => onPageLoad("http://gradeflow.net/api/workitem/1"))
-      // .catch(err => onPageLoad("http://gradeflow.net/api/workitem/1"))
-      onPageLoad(1);
+
+      onPageLoad(2);
     }
     if (target.matches(".finish")) {
       //removing prev tooltip
@@ -156,9 +138,7 @@ function setupClickHandlers() {
         feedback: feedbackMessage,
         score: scoreArray,
       };
-      //  postData("http://gradeflow.net/api/workitem/2", dataToPost)
-      // .then(respose => onPageLoad("http://gradeflow.net/api/workitem/2"))
-      // .catch(err => onPageLoad("http://gradeflow.net/api/workitem/2"))
+
       onPageLoad(2);
     }
     /* TASK EVENTS */
@@ -265,14 +245,13 @@ function updateScore(task, score, totalScore) {
   //Updating new value in the state
   store.evaluations.filter((evaluation) => evaluation.id == task.id)[0].score =
     parseInt(score);
-  // store.evaluations.filter(evaluation => evaluation.id == task.id)[0].teacherGraded = true;
 
   //Act number UI in the task card
   const taskScore = task.querySelector(".card__score");
   taskScore.innerText = `${parseInt(score)}/${parseInt(totalScore)}`;
 
   //Updating total score number
-  calcScore();
+  store.scoreInfo.runningScore = calcScore(store);
   //Rendering Score (topbar)
   renderAt(
     "#running-score",
@@ -313,22 +292,14 @@ function renderTask() {
     });
   }
 }
-/* UTILS FUNCTIONS */
-function calcScore() {
-  //Reducing total score (evaluated + graded)
-  const runningScore = store.evaluations.reduce((acc, value) => {
-    return acc + value.score;
-  }, 0);
-  store.scoreInfo.runningScore = runningScore;
-}
+
 function evaluatedTo100() {
   // evaluated score to 100
   store.evaluationsRendered
     .filter((evaluation) => evaluation.teacherGraded === false)
     .forEach((gradedEvaluation) => {
-      const taskId = gradedEvaluation.id;
       updateScore(
-        document.getElementById(taskId),
+        document.getElementById(gradedEvaluation.id),
         gradedEvaluation.possibleScore,
         gradedEvaluation.possibleScore
       );
@@ -346,54 +317,4 @@ function gradedTo100() {
         gradedEvaluation.possibleScore
       );
     });
-}
-function setWidth(value) {
-  //setting width function
-  const sizeValue = document.querySelector(".sizeValue");
-  const mainContainer = document.querySelector(".main");
-  switch (true) {
-    case value === 50:
-      sizeValue.innerText = value;
-      sizeValue.previousElementSibling.classList.add("disabled");
-      mainContainer.style.gridTemplateColumns = "50% 1fr";
-      break;
-    case value === 60:
-      sizeValue.innerText = value;
-      sizeValue.previousElementSibling.classList.remove("disabled");
-      sizeValue.nextElementSibling.classList.remove("disabled");
-      mainContainer.style.gridTemplateColumns = "60% 1fr";
-      break;
-    case value === 70:
-      sizeValue.innerText = value;
-      sizeValue.nextElementSibling.classList.add("disabled");
-      mainContainer.style.gridTemplateColumns = "65% 1fr";
-      break;
-    default:
-      break;
-  }
-}
-function updateTaskUi(task) {
-  //update task card
-  const nextTask = task.nextElementSibling;
-  const taskContainer = task.querySelector(".principal");
-  const assigment = document.querySelector(".assigment");
-
-  //hide actual card
-  taskContainer.classList.remove("show");
-  task.querySelector(".card__btn").setAttribute("aria-expanded", false);
-  // if there any other card open it and scroll it to top
-  if (nextTask) {
-    nextTask.scrollIntoView();
-    new Collapse(nextTask.querySelector(".principal"), {
-      show: true,
-    });
-  }
-}
-//Filter selecter UI
-function selectedFilter(setting, nodeGroup) {
-  const radioButtons = document.querySelectorAll(nodeGroup);
-  const array = [...radioButtons];
-  array
-    .filter((button) => button.id == setting)
-    .map((selectedButton) => (selectedButton.checked = true));
 }
