@@ -55,12 +55,3 @@ export const documentTask = (data, state) => {
       </div>
   `;
 };
-
-{
-  /* <button class="btn btn-circle filePreference" data-target="preview" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Preview view">
-          <svg class="btn-icon btn-icon--small"><use xlink:href="images/sprite.svg#icon-preview"></use></svg>
-        </button>
-        <button class="btn btn-circle filePreference" data-target="edit" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit view">
-          <svg class="btn-icon btn-icon--small"><use xlink:href="images/sprite.svg#icon-edit"></use></svg>
-        </button> */
-}

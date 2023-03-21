@@ -11,13 +11,26 @@ This code is used for rendering and handling events in a web application that al
 ### Store Object
 
 The store object holds the application's state, including:
--template settings,
--score information,
--evaluations,
--rendered evaluations,
--and feedback.
+
+- template settings,
+- score information,
+- evaluations,
+- rendered evaluations,
+- and feedback.
 
 ### Event Listeners
 
 1. DOMContentLoaded: When the page is loaded, it calls the onPageLoad and setupClickHandlers functions.
 2. Click: Handles various click events, such as filtering tasks, adjusting document view, updating scores, and providing feedback.
+
+### Render Functions
+
+In the code base are two types of render functions.
+
+1. Functions that return `html` strings - Can be found in `src/js/components`
+2. Functions that update the DOM - Can be found in `index.js`
+
+- updateScore
+- renderTask
+- evaluatedTo100
+- gradedTo100

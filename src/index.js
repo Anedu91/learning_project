@@ -3,7 +3,7 @@ import "./scss/main.scss";
 import "./images/sprite.svg";
 
 import { getData } from "./js/fetchingData";
-/*UI COMPONENTS */
+
 import { navigationTop, rendingScore } from "./js/components/navigationTop";
 import { assignmentTask } from "./js/components/assignmentTask";
 import { documentTask, renderIframe } from "./js/components/documentTask";
@@ -12,7 +12,7 @@ import { store } from "./js/store/store";
 import { setWidth } from "./js/utils/setWidth";
 import { selectedFilter } from "./js/utils/selectedFilter";
 import { updateTaskUi } from "./js/utils/updateTaskUi";
-//Initial State
+import { renderAt } from "./js/utils/renderAt";
 
 /*======EVENT LISTENERS======*/
 document.addEventListener("DOMContentLoaded", async () => {
@@ -224,7 +224,7 @@ function setupClickHandlers() {
     }
   });
 }
-/*OTHERS EVENTS */
+/* OTHERS EVENTS */
 function setupChangeHandlers(input) {
   //change event from input number (range)
   const card = input.closest(".card");
@@ -235,12 +235,9 @@ function setupChangeHandlers(input) {
     button.dataset.score = event.target.value;
   });
 }
-/* RENDER FUNCTION */
-function renderAt(element, html) {
-  const node = document.querySelector(element);
 
-  node.innerHTML = html;
-}
+/* RENDER FUNCTION */
+
 function updateScore(task, score, totalScore) {
   //Updating new value in the state
   store.evaluations.filter((evaluation) => evaluation.id == task.id)[0].score =
@@ -262,7 +259,7 @@ function updateScore(task, score, totalScore) {
     )
   );
 }
-/* RENDERING TASKS CARDS */
+
 function renderTask() {
   const evaluationTask = store.evaluations.filter((task) => {
     //show all filter
