@@ -1,3 +1,5 @@
+import { Collapse } from "bootstrap";
+
 export function updateTaskUi(task) {
   //update task card
   const nextTask = task.nextElementSibling;
